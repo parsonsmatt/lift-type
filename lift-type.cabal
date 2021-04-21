@@ -1,11 +1,4 @@
 cabal-version: 1.12
-
--- This file has been generated from package.yaml by hpack version 0.33.0.
---
--- see: https://github.com/sol/hpack
---
--- hash: 23955cc9f9435f1d1ae0c536c282d65253efa7a277b5dad309ddcb51418bdacd
-
 name:           lift-type
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/lift-type#readme>
@@ -27,10 +20,7 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
       LiftType
-  other-modules:
-      Paths_lift_type
   hs-source-dirs:
       src
   build-depends:
@@ -41,8 +31,6 @@ library
 test-suite lift-type-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
-  other-modules:
-      Paths_lift_type
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
