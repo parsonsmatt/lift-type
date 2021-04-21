@@ -37,9 +37,9 @@ liftTypeQ = pure $ liftType @t
 --
 -- @
 -- >>> :set -XTypeApplications
--- >>> liftType @Bool
+-- >>> liftType \@Bool
 -- ConT GHC.Types.Bool
--- >>> liftType @[Char]
+-- >>> liftType \@[Char]
 -- AppT (ConT GHC.Types.[]) (ConT GHC.Types.Char)
 -- @
 --
@@ -47,13 +47,13 @@ liftTypeQ = pure $ liftType @t
 --
 -- @
 -- >>> :set -XDataKinds
--- >>> liftType @3
+-- >>> liftType \@3
 -- LitT (NumTyLit 3)
--- >>> liftType @"hello"
+-- >>> liftType \@"hello"
 -- LitT (StrTyLit "hello")
--- >>> liftType @'[Int, Char]
+-- >>> liftType \@'[Int, Char]
 -- AppT (AppT (PromotedT GHC.Types.:) (ConT GHC.Types.Int)) (AppT (AppT (PromotedT GHC.Types.:) (ConT GHC.Types.Char)) (PromotedT GHC.Types.[]))
--- >>> liftType @'(Int, Char)
+-- >>> liftType \@'(Int, Char)
 -- AppT (AppT (PromotedT GHC.Tuple.(,)) (ConT GHC.Types.Int)) (ConT GHC.Types.Char)
 -- @
 --
