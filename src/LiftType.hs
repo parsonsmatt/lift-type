@@ -1,4 +1,4 @@
-{-# language ScopedTypeVariables, AllowAmbiguousTypes, TypeApplications, PolyKinds, TemplateHaskell, MultiWayIf #-}
+{-# language ScopedTypeVariables, AllowAmbiguousTypes, TypeApplications, PolyKinds, TemplateHaskell #-}
 
 -- | Template Haskell has a class 'Lift' that allows you to promote values
 -- from Haskell-land into the land of metaprogramming - 'Q'.
@@ -22,7 +22,9 @@ import Data.Char
 import Control.Applicative
 import Type.Reflection
 import Language.Haskell.TH.Syntax
-import Text.Read
+import Data.Foldable (asum)
+import Data.Maybe (fromMaybe)
+import Text.Read (readMaybe)
 
 -- | 'liftType' promoted to the 'Q' monad.
 --
@@ -98,12 +100,7 @@ liftType =
                           flavor
               _ -> Nothing
             tryNat = LitT . NumTyLit <$> readMaybe tcName
-        in
-            if
-              | Just tc <- tryTicked -> tc
-              | Just tc <- trySymbol -> tc
-              | Just tc <- tryNat -> tc
-              | otherwise ->
+            plainType =
                 let
                     nameBase =
                         mkOccName tcName
@@ -118,3 +115,4 @@ liftType =
                             flavor
                 in
                     ConT name
+        in fromMaybe plainType $ asum [tryTicked, trySymbol, tryNat]
