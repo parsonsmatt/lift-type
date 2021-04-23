@@ -1,4 +1,4 @@
-{-# language ScopedTypeVariables, AllowAmbiguousTypes, TypeApplications, PolyKinds, TemplateHaskell #-}
+{-# language TypeInType, ScopedTypeVariables, AllowAmbiguousTypes, TypeApplications, PolyKinds, TemplateHaskell #-}
 
 -- | Template Haskell has a class 'Lift' that allows you to promote values
 -- from Haskell-land into the land of metaprogramming - 'Q'.
