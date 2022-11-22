@@ -3,7 +3,7 @@
 ## 0.1.1.0
 
 - Cleanup and a slight performance improvement [#7](https://github.com/parsonsmatt/lift-type/pull/7)
-- Implement `typeRepToType :: SomeTypeRep -> Type`
+- Implement `typeRepToType :: SomeTypeRep -> Type` [#8](https://github.com/parsonsmatt/lift-type/pull/8)
 
 ## 0.1.0.1
 
