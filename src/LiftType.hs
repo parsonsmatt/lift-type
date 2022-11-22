@@ -22,6 +22,9 @@ import Data.Char
 import Control.Applicative
 import Type.Reflection
 import Language.Haskell.TH.Syntax
+import Data.Foldable (asum)
+import Data.Maybe (fromMaybe)
+import Text.Read (readMaybe)
 
 -- | 'liftType' promoted to the 'Q' monad.
 --
@@ -67,38 +70,44 @@ liftType =
         case tr of
             Con tyCon ->
                 mk tyCon
-            App trA trB ->
-                AppT (go trA) (go trB)
             Fun trA trB ->
                 ConT ''(->) `AppT` go trA `AppT` go trB
+            App trA trB ->
+                AppT (go trA) (go trB)
 
     mk :: TyCon -> Type
     mk tyCon =
         let
             tcName =
                 tyConName tyCon
-        in
-            if hasTick tcName
-            then
-                let
-                    nameBase =
-                        mkOccName (drop 1 tcName)
-                    flavor =
-                        NameG
-                            DataName
-                            (mkPkgName $ tyConPackage tyCon)
-                            (mkModName $ tyConModule tyCon)
-                    name =
-                        Name
-                            nameBase
-                            flavor
-                in
-                    PromotedT name
-            else if hasDigit tcName then
-                LitT (NumTyLit (read tcName))
-            else if hasQuote tcName then
-                LitT (StrTyLit (stripQuotes tcName))
-            else
+            trySymbol =
+                case tcName of
+                    '"' : cs ->
+                        Just $ LitT (StrTyLit (zipWith const cs (drop 1 cs)))
+                    _ ->
+                        Nothing
+            tryTicked =
+                case tcName of
+                    '\'' : dcName ->
+                        let nameBase =
+                                mkOccName dcName
+
+                            flavor =
+                                NameG
+                                    DataName
+                                    (mkPkgName $ tyConPackage tyCon)
+                                    (mkModName $ tyConModule tyCon)
+                            name =
+                                Name
+                                    nameBase
+                                    flavor
+                        in
+                            Just (PromotedT name)
+                    _ ->
+                        Nothing
+            tryNat =
+                LitT . NumTyLit <$> readMaybe tcName
+            plainType =
                 let
                     nameBase =
                         mkOccName tcName
@@ -113,23 +122,4 @@ liftType =
                             flavor
                 in
                     ConT name
-
-    stripQuotes xs =
-        case xs of
-            [] ->
-                []
-            ('"' : rest) ->
-                reverse (stripQuotes (reverse rest))
-            _ ->
-                xs
-    hasTick = prefixSatisfying ('\'' ==)
-    hasDigit = prefixSatisfying isDigit
-    hasQuote = prefixSatisfying ('"' ==)
-    isList = ("'[]" ==)
-    prefixSatisfying :: (Char -> Bool) -> [Char] -> Bool
-    prefixSatisfying p xs =
-        case xs of
-            a : _ ->
-                p a
-            _ ->
-                False
+        in fromMaybe plainType $ asum [tryTicked, trySymbol, tryNat]
