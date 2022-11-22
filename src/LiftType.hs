@@ -1,4 +1,9 @@
-{-# language TypeInType, ScopedTypeVariables, AllowAmbiguousTypes, TypeApplications, PolyKinds, TemplateHaskell #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeInType #-}
 
 -- | Template Haskell has a class 'Lift' that allows you to promote values
 -- from Haskell-land into the land of metaprogramming - 'Q'.
@@ -18,13 +23,13 @@
 -- @since 0.1.0.0
 module LiftType where
 
-import Data.Char
 import Control.Applicative
-import Type.Reflection
-import Language.Haskell.TH.Syntax
+import Data.Char
 import Data.Foldable (asum)
 import Data.Maybe (fromMaybe)
+import Language.Haskell.TH.Syntax
 import Text.Read (readMaybe)
+import Type.Reflection
 
 -- | 'liftType' promoted to the 'Q' monad.
 --
