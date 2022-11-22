@@ -1,4 +1,9 @@
-{-# language TypeInType, ScopedTypeVariables, AllowAmbiguousTypes, TypeApplications, PolyKinds, TemplateHaskell #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeInType #-}
 
 -- | Template Haskell has a class 'Lift' that allows you to promote values
 -- from Haskell-land into the land of metaprogramming - 'Q'.
@@ -18,13 +23,13 @@
 -- @since 0.1.0.0
 module LiftType where
 
-import Data.Char
 import Control.Applicative
-import Type.Reflection
-import Language.Haskell.TH.Syntax
+import Data.Char
 import Data.Foldable (asum)
 import Data.Maybe (fromMaybe)
+import Language.Haskell.TH.Syntax
 import Text.Read (readMaybe)
+import Type.Reflection
 
 -- | 'liftType' promoted to the 'Q' monad.
 --
@@ -32,38 +37,11 @@ import Text.Read (readMaybe)
 liftTypeQ :: forall t. Typeable t => Q Type
 liftTypeQ = pure $ liftType @t
 
--- | Convert a type argument into a Template Haskell 'Type'.
+-- | Promote a 'SomeTypeRep' into a 'Type'.
 --
--- Use with @TypeApplications@.
---
--- Example:
---
--- @
--- >>> :set -XTypeApplications
--- >>> liftType \@Bool
--- ConT GHC.Types.Bool
--- >>> liftType \@[Char]
--- AppT (ConT GHC.Types.[]) (ConT GHC.Types.Char)
--- @
---
--- This works with data kinds, too.
---
--- @
--- >>> :set -XDataKinds
--- >>> liftType \@3
--- LitT (NumTyLit 3)
--- >>> liftType \@"hello"
--- LitT (StrTyLit "hello")
--- >>> liftType \@'[Int, Char]
--- AppT (AppT (PromotedT GHC.Types.:) (ConT GHC.Types.Int)) (AppT (AppT (PromotedT GHC.Types.:) (ConT GHC.Types.Char)) (PromotedT GHC.Types.[]))
--- >>> liftType \@'(Int, Char)
--- AppT (AppT (PromotedT GHC.Tuple.(,)) (ConT GHC.Types.Int)) (ConT GHC.Types.Char)
--- @
---
--- @since 0.1.0.0
-liftType :: forall t. Typeable t => Type
-liftType =
-    go (typeRep @t)
+-- @since 0.1.1.0
+typeRepToType :: SomeTypeRep -> Type
+typeRepToType (SomeTypeRep a) = go a
   where
     go :: forall k (a :: k). TypeRep a -> Type
     go tr =
@@ -123,3 +101,36 @@ liftType =
                 in
                     ConT name
         in fromMaybe plainType $ asum [tryTicked, trySymbol, tryNat]
+
+-- | Convert a type argument into a Template Haskell 'Type'.
+--
+-- Use with @TypeApplications@.
+--
+-- Example:
+--
+-- @
+-- >>> :set -XTypeApplications
+-- >>> liftType \@Bool
+-- ConT GHC.Types.Bool
+-- >>> liftType \@[Char]
+-- AppT (ConT GHC.Types.[]) (ConT GHC.Types.Char)
+-- @
+--
+-- This works with data kinds, too.
+--
+-- @
+-- >>> :set -XDataKinds
+-- >>> liftType \@3
+-- LitT (NumTyLit 3)
+-- >>> liftType \@"hello"
+-- LitT (StrTyLit "hello")
+-- >>> liftType \@'[Int, Char]
+-- AppT (AppT (PromotedT GHC.Types.:) (ConT GHC.Types.Int)) (AppT (AppT (PromotedT GHC.Types.:) (ConT GHC.Types.Char)) (PromotedT GHC.Types.[]))
+-- >>> liftType \@'(Int, Char)
+-- AppT (AppT (PromotedT GHC.Tuple.(,)) (ConT GHC.Types.Int)) (ConT GHC.Types.Char)
+-- @
+--
+-- @since 0.1.0.0
+liftType :: forall t. Typeable t => Type
+liftType =
+    typeRepToType (SomeTypeRep (typeRep @t))
