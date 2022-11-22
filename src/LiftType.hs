@@ -81,25 +81,28 @@ liftType =
             tcName =
                 tyConName tyCon
             trySymbol = case tcName of
-              '"' : cs -> Just $ LitT (StrTyLit (zipWith const cs (drop 1 cs)))
-              _ -> Nothing
+                '"' : cs -> Just $ LitT (StrTyLit (zipWith const cs (drop 1 cs)))
+                _ -> Nothing
             tryTicked = case tcName of
-              '\'' : dcName -> Just (PromotedT name)
-                where
-                  nameBase =
-                      mkOccName dcName
+                '\'' : dcName ->
+                    let nameBase =
+                            mkOccName dcName
 
-                  flavor =
-                      NameG
-                          DataName
-                          (mkPkgName $ tyConPackage tyCon)
-                          (mkModName $ tyConModule tyCon)
-                  name =
-                      Name
-                          nameBase
-                          flavor
-              _ -> Nothing
-            tryNat = LitT . NumTyLit <$> readMaybe tcName
+                        flavor =
+                            NameG
+                                DataName
+                                (mkPkgName $ tyConPackage tyCon)
+                                (mkModName $ tyConModule tyCon)
+                        name =
+                            Name
+                                nameBase
+                                flavor
+                    in
+                        Just (PromotedT name)
+                _ ->
+                    Nothing
+            tryNat =
+                LitT . NumTyLit <$> readMaybe tcName
             plainType =
                 let
                     nameBase =
