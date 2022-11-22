@@ -133,4 +133,4 @@ typeRepToType (SomeTypeRep a) = go a
 -- @since 0.1.0.0
 liftType :: forall t. Typeable t => Type
 liftType =
-    typeRepToType (typeRep @t)
+    typeRepToType (SomeTypeRep (typeRep @t))
