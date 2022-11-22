@@ -80,27 +80,31 @@ liftType =
         let
             tcName =
                 tyConName tyCon
-            trySymbol = case tcName of
-                '"' : cs -> Just $ LitT (StrTyLit (zipWith const cs (drop 1 cs)))
-                _ -> Nothing
-            tryTicked = case tcName of
-                '\'' : dcName ->
-                    let nameBase =
-                            mkOccName dcName
+            trySymbol =
+                case tcName of
+                    '"' : cs ->
+                        Just $ LitT (StrTyLit (zipWith const cs (drop 1 cs)))
+                    _ ->
+                        Nothing
+            tryTicked =
+                case tcName of
+                    '\'' : dcName ->
+                        let nameBase =
+                                mkOccName dcName
 
-                        flavor =
-                            NameG
-                                DataName
-                                (mkPkgName $ tyConPackage tyCon)
-                                (mkModName $ tyConModule tyCon)
-                        name =
-                            Name
-                                nameBase
-                                flavor
-                    in
-                        Just (PromotedT name)
-                _ ->
-                    Nothing
+                            flavor =
+                                NameG
+                                    DataName
+                                    (mkPkgName $ tyConPackage tyCon)
+                                    (mkModName $ tyConModule tyCon)
+                            name =
+                                Name
+                                    nameBase
+                                    flavor
+                        in
+                            Just (PromotedT name)
+                    _ ->
+                        Nothing
             tryNat =
                 LitT . NumTyLit <$> readMaybe tcName
             plainType =
