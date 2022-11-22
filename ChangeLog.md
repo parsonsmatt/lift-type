@@ -1,8 +1,9 @@
 # Changelog for lift-typeable
 
-## unreleased
+## 0.1.1.0
 
 - Cleanup and a slight performance improvement [#7](https://github.com/parsonsmatt/lift-type/pull/7)
+- Implement `typeRepToType :: SomeTypeRep -> Type`
 
 ## 0.1.0.1
 

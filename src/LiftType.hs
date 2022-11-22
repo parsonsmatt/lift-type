@@ -32,6 +32,71 @@ import Text.Read (readMaybe)
 liftTypeQ :: forall t. Typeable t => Q Type
 liftTypeQ = pure $ liftType @t
 
+-- | Promote a 'SomeTypeRep' into a 'Type'.
+--
+-- @since 0.1.1.0
+typeRepToType :: SomeTypeRep -> Type
+typeRepToType (SomeTypeRep a) = go a
+  where
+    go :: forall k (a :: k). TypeRep a -> Type
+    go tr =
+        case tr of
+            Con tyCon ->
+                mk tyCon
+            Fun trA trB ->
+                ConT ''(->) `AppT` go trA `AppT` go trB
+            App trA trB ->
+                AppT (go trA) (go trB)
+
+    mk :: TyCon -> Type
+    mk tyCon =
+        let
+            tcName =
+                tyConName tyCon
+            trySymbol =
+                case tcName of
+                    '"' : cs ->
+                        Just $ LitT (StrTyLit (zipWith const cs (drop 1 cs)))
+                    _ ->
+                        Nothing
+            tryTicked =
+                case tcName of
+                    '\'' : dcName ->
+                        let nameBase =
+                                mkOccName dcName
+
+                            flavor =
+                                NameG
+                                    DataName
+                                    (mkPkgName $ tyConPackage tyCon)
+                                    (mkModName $ tyConModule tyCon)
+                            name =
+                                Name
+                                    nameBase
+                                    flavor
+                        in
+                            Just (PromotedT name)
+                    _ ->
+                        Nothing
+            tryNat =
+                LitT . NumTyLit <$> readMaybe tcName
+            plainType =
+                let
+                    nameBase =
+                        mkOccName tcName
+                    flavor =
+                        NameG
+                            TcClsName
+                            (mkPkgName $ tyConPackage tyCon)
+                            (mkModName $ tyConModule tyCon)
+                    name =
+                        Name
+                            nameBase
+                            flavor
+                in
+                    ConT name
+        in fromMaybe plainType $ asum [tryTicked, trySymbol, tryNat]
+
 -- | Convert a type argument into a Template Haskell 'Type'.
 --
 -- Use with @TypeApplications@.
