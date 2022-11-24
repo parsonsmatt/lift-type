@@ -1,12 +1,18 @@
-{-# language TemplateHaskell, DataKinds, TypeApplications #-}
+{-# language MagicHash, TemplateHaskell, DataKinds, TypeApplications #-}
+
 module Main where
 
 import LiftType
 import Data.Proxy
+import Data.Kind
+import GHC.Exts
 
 main :: IO ()
 main = do
     let
+        type_ = Proxy :: Proxy $(liftTypeQ @Type)
+        type_' = Proxy :: Proxy $(liftTypeQ @TYPE)
+        word# = Proxy :: Proxy $(liftTypeQ @Word#)
         bool = Proxy :: Proxy $(liftTypeQ @Bool)
         true = Proxy :: Proxy $(liftTypeQ @'True)
         three = Proxy :: Proxy $(liftTypeQ @3)

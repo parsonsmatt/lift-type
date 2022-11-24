@@ -1,9 +1,11 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE GADTs #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeInType #-}
+{-# LANGUAGE TypeOperators #-}
 
 -- | Template Haskell has a class 'Lift' that allows you to promote values
 -- from Haskell-land into the land of metaprogramming - 'Q'.
@@ -23,9 +25,8 @@
 -- @since 0.1.0.0
 module LiftType where
 
-import Control.Applicative
-import Data.Char
 import Data.Foldable (asum)
+import qualified Data.Kind as Kind
 import Data.Maybe (fromMaybe)
 import Language.Haskell.TH.Syntax
 import Text.Read (readMaybe)
@@ -44,7 +45,10 @@ typeRepToType :: SomeTypeRep -> Type
 typeRepToType (SomeTypeRep a) = go a
   where
     go :: forall k (a :: k). TypeRep a -> Type
-    go tr =
+    go tr
+        | Just HRefl <- eqTypeRep (typeRep @Kind.Type) tr
+        = ConT ''Kind.Type
+        | otherwise =
         case tr of
             Con tyCon ->
                 mk tyCon

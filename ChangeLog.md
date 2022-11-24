@@ -1,5 +1,9 @@
 # Changelog for lift-typeable
 
+## 0.1.1.1
+
+- Fix lifting the `Data.Kind.Type` into a `TemplateHaskell.Type` [#9](https://github.com/parsonsmatt/lift-type/pull/9)
+
 ## 0.1.1.0
 
 - Cleanup and a slight performance improvement [#7](https://github.com/parsonsmatt/lift-type/pull/7)
