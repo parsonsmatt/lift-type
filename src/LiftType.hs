@@ -47,7 +47,6 @@ typeRepToType (SomeTypeRep a) = go a
     go :: forall k (a :: k). TypeRep a -> Type
     go tr
         | Just HRefl <- eqTypeRep (typeRep @Kind.Type) tr
-        , False
         = ConT ''Kind.Type
         | otherwise =
         case tr of

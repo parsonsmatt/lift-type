@@ -11,6 +11,7 @@ main :: IO ()
 main = do
     let
         type_ = Proxy :: Proxy $(liftTypeQ @Type)
+        type_' = Proxy :: Proxy $(liftTypeQ @TYPE)
         word# = Proxy :: Proxy $(liftTypeQ @Word#)
         bool = Proxy :: Proxy $(liftTypeQ @Bool)
         true = Proxy :: Proxy $(liftTypeQ @'True)
