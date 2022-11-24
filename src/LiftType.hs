@@ -1,4 +1,6 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE GADTs #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
@@ -23,13 +25,12 @@
 -- @since 0.1.0.0
 module LiftType where
 
-import Control.Applicative
-import Data.Char
 import Data.Foldable (asum)
 import Data.Maybe (fromMaybe)
 import Language.Haskell.TH.Syntax
 import Text.Read (readMaybe)
 import Type.Reflection
+import qualified Data.Kind as Kind
 
 -- | 'liftType' promoted to the 'Q' monad.
 --
@@ -44,7 +45,11 @@ typeRepToType :: SomeTypeRep -> Type
 typeRepToType (SomeTypeRep a) = go a
   where
     go :: forall k (a :: k). TypeRep a -> Type
-    go tr =
+    go tr
+        | Just HRefl <- eqTypeRep (typeRep @Kind.Type) tr
+        , False
+        = ConT ''Kind.Type
+        | otherwise =
         case tr of
             Con tyCon ->
                 mk tyCon
