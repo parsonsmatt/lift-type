@@ -1,11 +1,11 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
-{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeInType #-}
+{-# LANGUAGE TypeOperators #-}
 
 -- | Template Haskell has a class 'Lift' that allows you to promote values
 -- from Haskell-land into the land of metaprogramming - 'Q'.
@@ -26,11 +26,11 @@
 module LiftType where
 
 import Data.Foldable (asum)
+import qualified Data.Kind as Kind
 import Data.Maybe (fromMaybe)
 import Language.Haskell.TH.Syntax
 import Text.Read (readMaybe)
 import Type.Reflection
-import qualified Data.Kind as Kind
 
 -- | 'liftType' promoted to the 'Q' monad.
 --
