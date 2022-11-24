@@ -1,6 +1,6 @@
 cabal-version: 1.12
 name:           lift-type
-version:        0.1.1.0
+version:        0.1.1.1
 description:    Lift your types from a Typeable constraint to a Template Haskell type
 synopsis:       Lift a type from a Typeable constraint to a Template Haskell type
 homepage:       https://github.com/parsonsmatt/lift-type#readme
