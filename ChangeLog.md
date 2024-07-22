@@ -1,5 +1,9 @@
 # Changelog for lift-typeable
 
+## 0.1.2.0
+
+- Add `typeToName`, making it possible to accurately extract a `Name` from a type. [#]()
+
 ## 0.1.1.1
 
 - Fix lifting the `Data.Kind.Type` into a `TemplateHaskell.Type` [#9](https://github.com/parsonsmatt/lift-type/pull/9)
