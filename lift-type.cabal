@@ -40,4 +40,5 @@ test-suite lift-type-test
     , lift-type
     , template-haskell
     , hspec
+    , ghc-prim
   default-language: Haskell2010

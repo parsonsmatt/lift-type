@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE MagicHash #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
@@ -10,6 +11,7 @@ import Data.Proxy
 import GHC.Exts
 import LiftType
 import Test.Hspec
+import GHC.Prim
 
 main :: IO ()
 main = do
@@ -33,7 +35,11 @@ main = do
         describe "LiftType" $ do
             describe "typeToName" $ do
                 it "returns function arrow on functions" $ do
+#if __GLASGOW_HASKELL__ >= 900
+                    typeToName @(Int -> Char) `shouldBe` TypeName ''GHC.Prim.FUN
+#else
                     typeToName @(Int -> Char) `shouldBe` TypeName ''(->)
+#endif
                 it "works on a plain type" $ do
                     typeToName @Char `shouldBe` TypeName ''Char
                 it "works on Maybe" $ do
