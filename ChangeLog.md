@@ -2,7 +2,7 @@
 
 ## 0.1.2.0
 
-- Add `typeToName`, making it possible to accurately extract a `Name` from a type. [#]()
+- Add `typeToName`, making it possible to accurately extract a `Name` from a type. [#11](https://github.com/parsonsmatt/lift-type/pull/11)
 
 ## 0.1.1.1
 
