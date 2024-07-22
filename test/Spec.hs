@@ -1,11 +1,14 @@
-{-# language MagicHash, TemplateHaskell, DataKinds, TypeApplications #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE MagicHash #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Main where
 
-import LiftType
-import Data.Proxy
 import Data.Kind
+import Data.Proxy
 import GHC.Exts
+import LiftType
 import Test.Hspec
 
 main :: IO ()
