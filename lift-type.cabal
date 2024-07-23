@@ -1,6 +1,6 @@
 cabal-version: 1.12
 name:           lift-type
-version:        0.1.1.1
+version:        0.1.2.0
 description:    Lift your types from a Typeable constraint to a Template Haskell type
 synopsis:       Lift a type from a Typeable constraint to a Template Haskell type
 homepage:       https://github.com/parsonsmatt/lift-type#readme
@@ -39,4 +39,6 @@ test-suite lift-type-test
       base
     , lift-type
     , template-haskell
+    , hspec
+    , ghc-prim
   default-language: Haskell2010
